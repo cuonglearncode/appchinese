@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=HSK Master
+Comment=Học Tiếng Trung HSK 1-6
+Exec=bash -c "cd /home/cuong/Documents/TiengTrung/appchinese && npm run dev"
+Icon=utilities-terminal
+Terminal=true
+StartupNotify=true
+Categories=Education;

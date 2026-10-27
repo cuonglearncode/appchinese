@@ -1,0 +1,60 @@
+{
+  "name": "appchinese",
+  "version": "1.0.0",
+  "description": "Ứng dụng Desktop học tiếng Trung HSK 1-6",
+  "main": "./out/main/index.js",
+  "type": "module",
+  "author": "Antigravity",
+  "license": "MIT",
+  "homepage": "https://github.com/antigravity/appchinese",
+  "scripts": {
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json",
+    "typecheck:web": "tsc --noEmit -p tsconfig.web.json",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web",
+    "dev": "electron-vite dev",
+    "build": "npm run typecheck && electron-vite build",
+    "build:unpack": "npm run build && electron-builder --dir",
+    "package:linux": "npm run build && electron-builder --linux",
+    "package:win": "npm run build && electron-builder --win",
+    "package:mac": "npm run build && electron-builder --mac",
+    "preview": "electron-vite preview",
+    "test": "vitest run --fileParallelism=false"
+  },
+  "overrides": {
+    "node-gyp": "^11.0.0"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.18.0",
+    "@tanstack/react-query": "^5.62.11",
+    "@tanstack/react-virtual": "^3.11.2",
+    "better-sqlite3": "^13.0.3",
+    "clsx": "^2.1.1",
+    "hanzi-writer": "^3.5.0",
+    "hanzi-writer-data": "^2.0.1",
+    "lucide-react": "^0.469.0",
+    "mysql2": "^3.12.0",
+    "tailwind-merge": "^2.6.0",
+    "zod": "^3.24.1",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@electron-toolkit/preload": "^3.0.1",
+    "@electron-toolkit/utils": "^4.0.0",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^2.3.0",
+    "postcss": "^8.4.49",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  }
+}

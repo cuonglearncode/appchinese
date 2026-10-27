@@ -1,0 +1,9 @@
+node_modules
+out
+dist
+.env
+.env.local
+*.tsbuildinfo
+dump.sql
+appchinese.db
+.DS_Store

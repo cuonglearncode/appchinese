@@ -1,0 +1,27 @@
+appId: com.antigravity.appchinese
+productName: Học Tiếng Trung HSK
+copyright: Copyright © 2026 Antigravity
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - "out/**/*"
+  - "resources/**/*"
+extraResources:
+  - from: "resources"
+    to: "resources"
+linux:
+  target:
+    - target: AppImage
+    - target: deb
+  category: Education
+  maintainer: Antigravity Team
+win:
+  target:
+    - target: nsis
+    - target: portable
+mac:
+  target:
+    - target: dmg
+    - target: zip
+  category: public.app-category.education
