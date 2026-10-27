@@ -1,38 +1,76 @@
 import { handleTursoIpc } from '../src/shared/turso-backend'
 
-export default async function handler(req: any, res: any) {
-  // Cấu hình CORS để web gọi API không bị chặn
-  res.setHeader('Access-Control-Allow-Credentials', 'true')
+async function parseBody(req: any): Promise<any> {
+  if (req.body) {
+    if (typeof req.body === 'string') {
+      try {
+        return JSON.parse(req.body)
+      } catch {
+        return {}
+      }
+    }
+    return req.body
+  }
+
+  return new Promise((resolve) => {
+    let data = ''
+    req.on('data', (chunk: any) => {
+      data += chunk
+    })
+    req.on('end', () => {
+      try {
+        resolve(data ? JSON.parse(data) : {})
+      } catch {
+        resolve({})
+      }
+    })
+    req.on('error', () => resolve({}))
+  })
+}
+
+function sendJson(res: any, status: number, data: any) {
+  res.statusCode = status
+  res.setHeader('Content-Type', 'application/json')
   res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
   res.setHeader(
     'Access-Control-Allow-Headers',
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
   )
+  res.end(JSON.stringify(data))
+}
 
+export default async function handler(req: any, res: any) {
   if (req.method === 'OPTIONS') {
-    res.status(200).end()
+    res.statusCode = 200
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+    res.end()
     return
   }
 
   if (req.method !== 'POST') {
-    res.status(405).json({ success: false, error: 'Method Not Allowed' })
+    sendJson(res, 405, { success: false, error: 'Method Not Allowed' })
     return
   }
 
   try {
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {}
-    const { channel, payload } = body
+    const body = await parseBody(req)
+    const { channel, payload } = body || {}
 
     if (!channel) {
-      res.status(400).json({ success: false, error: 'Thiếu channel' })
+      sendJson(res, 400, { success: false, error: 'Thiếu trường channel trong body' })
       return
     }
 
     const data = await handleTursoIpc(channel, payload)
-    res.status(200).json({ success: true, data })
+    sendJson(res, 200, { success: true, data })
   } catch (err: any) {
-    console.error('[Vercel API IPC] Lỗi:', err)
-    res.status(200).json({ success: false, error: err?.message || String(err) })
+    console.error('[API IPC Error]:', err)
+    sendJson(res, 200, {
+      success: false,
+      error: err?.message || String(err)
+    })
   }
 }
